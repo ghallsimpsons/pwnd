@@ -55,29 +55,29 @@ function _hit {
 }
 
 function _roll {
-    echo $(($RANDOM/1638+1))
+    echo $(perl -e 'print int(rand(20))+1')
 }
 
 function _perception {
-    r=$(perl -e 'print int(rand(20))+1')
+    r=$(_roll)
     echo "Roll perception check: $r" >/dev/tty
     echo "$r"
 }
 
 function _dexterity {
-    r=$(perl -e 'print int(rand(20))+1')
+    r=$(_roll)
     echo "Roll dexterity: $r" >/dev/tty
     echo "$r"
 }
 
 function _intelligence {
-    r=$(perl -e 'print int(rand(20))+1')
+    r=$(_roll)
     echo "Roll intelligence: $r" >/dev/tty
     echo "$r"
 }
 
 function _strength {
-    r=$(perl -e 'print int(rand(20))+1')
+    r=$(_roll)
     echo "Roll strength: $r" >/dev/tty
     echo "$r"
 }
