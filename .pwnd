@@ -72,6 +72,12 @@ function _intelligence {
     echo "$r"
 }
 
+function _strength {
+    r=$(perl -e 'print int(rand(20))+1')
+    echo "Roll strength: $r" >/dev/tty
+    echo "$r"
+}
+
 function ls {
     p=$(_perception)
     if [[ $p -eq 1 ]]; then
@@ -99,6 +105,26 @@ function cd {
     return
 }
 
+function cp {
+    s=$(_strength)
+    if [[ $s -eq 1 ]]; then
+        _hit 2 "You attempy to copy your file, but accidentally drop it, shattering it into a half-dozen pieces."
+        NUMLINES=$(wc -l $1 | awk '{print $1}')
+        RANGE=$(($NUMLINES/6))
+        for i in {0..4}; do
+            START=$(($i*$RANGE+1))
+            END=$(($START+$RANGE-1))
+            sed -n "$START,${END}p" $1 > $1.fragment.$i
+        done
+        sed -n "$(($END+1)),${NUMLINES}p" > $1.fragment.5
+        return
+    elif [[ $s -gt 10 ]]; then
+        /usr/bin/cp $@
+        return
+    fi
+    echo "You attempt to copy the file, but can't seem to lift it."
+    return
+}
 
 function vim {
     i=$(_intelligence)
