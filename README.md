@@ -9,5 +9,5 @@ direction of the ominous noise...
 
 # usage
 ```
-echo "source $HOME/pwnd/.pwnd"
+echo "source $HOME/pwnd/.pwnd" >> ~victim/.{bash,zsh}rc
 ```
