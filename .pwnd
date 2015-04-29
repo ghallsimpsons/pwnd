@@ -1,0 +1,144 @@
+alias > $HOME/.pwnd_alias
+
+MYLS=$(which ls)
+MYVIM=$(which vim)
+MYWHICH=$(which which)
+
+function which {
+    case "$1" in
+        ls)
+            echo "$MYLS"
+            ;;
+        vim)
+            echo "$MYVIM"
+            ;;
+        which)
+            echo "$MYWHICH"
+            ;;
+        *)
+            builtin which $@
+    esac
+}
+
+#function alias {
+#    if [ "$#" -eq 0 ]; then
+#        cat $HOME/.pwnd_alias
+#        return
+#    fi
+#TODO: FIX
+#    pwnd_funcs=("alias" "ls" "cd")
+#    $TMP="$1"
+#    $IFS=$'='
+#    aname=${TMP[0]}
+#    $IFS=$' '
+#    if [[ ! $aname =~ (^| )$pwnd_funcs($| ) ]]; then
+#        $(which alias) $TMP
+#    fi
+#    echo "$TMP" >> $HOME/.pwnd_alias
+#}
+
+HEALTH=15
+
+function _hit {
+    HEALTH=$((HEALTH-$1))
+    echo "$2"
+    echo "Your health falls to $HEALTH."
+    if [[ $HEALTH -le 0 ]]; then
+        echo "Oh no! You're dead!"
+        sleep 2
+        exit 1
+    fi
+}
+
+function _roll {
+    echo $(($RANDOM/1638+1))
+}
+
+function _perception {
+    r=$(perl -e 'print int(rand(20))+1')
+    echo "Roll perception check: $r" >/dev/tty
+    echo "$r"
+}
+
+function _dexterity {
+    r=$(perl -e 'print int(rand(20))+1')
+    echo "Roll dexterity: $r" >/dev/tty
+    echo "$r"
+}
+
+function _intelligence {
+    r=$(perl -e 'print int(rand(20))+1')
+    echo "Roll intelligence: $r" >/dev/tty
+    echo "$r"
+}
+
+function ls {
+    p=$(_perception)
+    if [[ $p -eq 1 ]]; then
+        _hit 1 "You think you find the source of this scurge, and try to crush it. Unfortunately, it was only your hand, and it quickly turns black and blue."
+        return
+    elif [[ $p -gt 10 ]]; then
+        /bin/ls -I'.pwnd*' $@
+        return
+    fi
+    echo "You don't notice anything..."
+    return
+}
+
+function cd {
+    d=$(_dexterity)
+    if [[ $d -eq 1 ]]; then
+        _hit 2 "You attempy to change directories, but you trip over your own dotfiles and fall down to /."
+        builtin cd /
+        return
+    elif [[ $d -gt 10 ]]; then
+        builtin cd $1
+        return
+    fi
+    echo "You attempt to change directories, but instead collapse under your own weight."
+    return
+}
+
+
+function vim {
+    i=$(_intelligence)
+    if [[ $i -eq 1 ]]; then
+        _hit 3 "You attempt to open the file, but instead open /dev/null. As you stare into the abyss, your eyes begin to bleed profusely."
+        return
+    elif [[ $i -eq 20 ]]; then
+        echo 'Critical! You open all the files!'
+        sleep 2
+        /usr/bin/vim *
+        return
+    elif [[ $i -gt 10 ]]; then
+        /usr/bin/vim $@
+        return
+    fi
+    echo "You attempt to open the file, but can't quite seem to figure it out."
+    return
+}
+
+alias vi='vim'
+
+function ssh {
+    echo "You enter the portal..."
+    /usr/bin/ssh $@
+}
+
+function sudo {
+    echo "You seem to have misplaced your sudo..."
+}
+
+function login_scenario {
+    cat  <<SCENARIO
+You awaken in a confused daze - The last thing you remember doing was walking
+away from your unlocked terminal.
+You find yourself in a dank cave, with green slime seeping out of every
+crevice. As you begin to regain your senses, you hear a shrill whine off in
+the distance. You reach for your sudo, but it seems to be gone. You find
+a nearby rock, and grip it tightly with one hand as you head off in the
+direction of the ominous noise...
+SCENARIO
+}
+
+login_scenario        
