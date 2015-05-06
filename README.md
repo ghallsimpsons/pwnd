@@ -11,3 +11,13 @@ direction of the ominous noise...
 ```
 echo "source $HOME/pwnd/.pwnd" >> ~victim/.{bash,zsh}rc
 ```
+# escape
+Currently, the simplest way to escape is simply to reference the binary directly.
+```
+/usr/bin/vim .bashrc  # Remove offending line
+```
+Of course, you could always try to be clever:
+```
+head -n -1 .bashrc > .bashrc
+```
+This may break in the future if I decide to alter head as well.
